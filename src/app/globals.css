@@ -1,26 +1,93 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* src/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Estilos adicionales si los necesitas */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply font-sans;
+}
+
+/* Asegúrate de que los fondos y colores sean consistentes */
+.bg-\[rgb\(120\,185\,45\)\] {
+  background-color: rgb(120, 185, 45);
+}
+
+.bg-\[rgb\(222\,230\,213\)\] {
+  background-color: rgb(222, 230, 213);
+}
+
+.text-\[rgb\(55\,65\,81\)\] {
+  color: rgb(55, 65, 81);
+}
+
+.text-\[rgb\(107\,114\,128\)\] {
+  color: rgb(107, 114, 128);
+}
+
+.text-\[rgb\(75\,85\,99\)\] {
+  color: rgb(75, 85, 99);
+}
+
+.border-\[rgb\(209\,213\,219\)\] {
+  border-color: rgb(209, 213, 219);
+}
+
+.border-\[rgb\(222\,230\,213\)\] {
+  border-color: rgb(222, 230, 213);
+}
+
+.hover\:text-\[rgb\(120\,185\,45\)\]:hover {
+  color: rgb(120, 185, 45);
+}
+
+.hover\:bg-\[rgb\(202\,210\,193\)\]:hover {
+  background-color: rgb(202, 210, 193);
+}
+
+.hover\:bg-\[rgb\(100\,165\,35\)\]:hover {
+  background-color: rgb(100, 165, 35);
+}
+
+.hover\:text-white:hover {
+  color: white;
+}
+
+.hover\:bg-white:hover {
+  background-color: white;
+}
+
+.hover\:text-\[rgb\(55\,65\,81\)\]:hover {
+  color: rgb(55, 65, 81);
+}
+
+.ring-\[rgb\(120\,185\,45\)\] {
+  ring-color: rgb(120, 185, 45);
+}
+
+.text-\[rgb\(222\,230\,213\)\] {
+  color: rgb(222, 230, 213);
+}
+
+.text-\[rgb\(156\,163\,175\)\] {
+  color: rgb(156, 163, 175);
+}
+
+.text-\[rgb\(209\,213\,219\)\] {
+  color: rgb(209, 213, 219);
+}
+
+.text-\[rgb\(75\,85\,99\)\] {
+  color: rgb(75, 85, 99);
+}
+
+.bg-\[rgb\(55\,65\,81\)\] {
+  background-color: rgb(55, 65, 81);
+}
+
+/* Para asegurar que los íconos SVG se adapten bien */
+.svg-icon {
+  @apply w-5 h-5;
 }
