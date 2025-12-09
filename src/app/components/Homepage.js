@@ -1,8 +1,8 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// 🔥 ICONOS (igual que antes, manteniendo consistencia)
+// 🔥 ICONOS (mantenidos igual)
 const Icons = {
   Phone: () => (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -148,7 +148,7 @@ const colors = {
   white: '#ffffff'
 };
 
-// 🏆 DATOS (igual que antes)
+// 🏆 DATOS
 const services = [
   {
     icon: Icons.Scissors,
@@ -200,14 +200,57 @@ const services = [
   }
 ];
 
+// Imágenes de galería con imágenes de placeholder por defecto
 const galleryImages = [
-  { src: "/c-1.jpg", alt: "Jardín contemporáneo con diseño minimalista", category: "Diseño Premium", year: "2024" },
-  { src: "/c-2.jpg", alt: "Paisaje urbano transformado en oasis verde", category: "Paisajismo Urbano", year: "2024" },
-  { src: "/c-3.jpg", alt: "Terraza moderna con integración natural perfecta", category: "Arquitectura Verde", year: "2023" },
-  { src: "/c-4.jpg", alt: "Jardín mediterráneo recuperado y revitalizado", category: "Restauración", year: "2023" },
-  { src: "/c-5.jpg", alt: "Espacio sostenible con especies autóctonas", category: "Diseño Sostenible", year: "2024" },
-  { src: "/c-6.jpg", alt: "Área de relax con elementos agua integrados", category: "Wellness Garden", year: "2024" },
-  { src: "/c-7.jpg", alt: "Jardín vertical en entorno corporativo", category: "Paisajismo Corporativo", year: "2023" }
+  {
+    src: "/c-1.jpg",
+    alt: "Jardín contemporáneo con diseño minimalista",
+    category: "Diseño Premium",
+    year: "2024",
+    placeholder: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-2.jpg",
+    alt: "Paisaje urbano transformado en oasis verde",
+    category: "Paisajismo Urbano",
+    year: "2024",
+    placeholder: "https://images.unsplash.com/photo-1564352969906-8b7f46ba4b8e?w-800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-3.jpg",
+    alt: "Terraza moderna con integración natural perfecta",
+    category: "Arquitectura Verde",
+    year: "2023",
+    placeholder: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-4.jpg",
+    alt: "Jardín mediterráneo recuperado y revitalizado",
+    category: "Restauración",
+    year: "2023",
+    placeholder: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-5.jpg",
+    alt: "Espacio sostenible con especies autóctonas",
+    category: "Diseño Sostenible",
+    year: "2024",
+    placeholder: "https://images.unsplash.com/photo-1564352969906-8b7f46ba4b8e?w-800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-6.jpg",
+    alt: "Área de relax con elementos agua integrados",
+    category: "Wellness Garden",
+    year: "2024",
+    placeholder: "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=800&auto=format&fit=crop&q=60"
+  },
+  {
+    src: "/c-7.jpg",
+    alt: "Jardín vertical en entorno corporativo",
+    category: "Paisajismo Corporativo",
+    year: "2023",
+    placeholder: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=800&auto=format&fit=crop&q=60"
+  }
 ];
 
 const advantages = [
@@ -324,7 +367,7 @@ const SectionHeader = ({ title, subtitle, number, isLight = false }) => (
         {number}
       </div>
     )}
-    <h2 className={`text-4xl md:text-5xl lg:text-7xl font-black mb-6 md:mb-8 tracking-tight leading-tight ${isLight ? 'text-white' : 'text-gray-900'}`}>
+    <h2 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-6 md:mb-8 tracking-tight leading-tight ${isLight ? 'text-white' : 'text-gray-900'}`}>
       {title}
     </h2>
     <p className={`text-lg md:text-xl lg:text-2xl ${isLight ? 'text-white/90' : 'text-gray-600'} max-w-3xl mx-auto leading-relaxed font-light px-2`}>
@@ -335,39 +378,115 @@ const SectionHeader = ({ title, subtitle, number, isLight = false }) => (
   </motion.div>
 );
 
+// Componente para manejar imágenes con fallback
+const ImageWithFallback = ({ src, placeholder, alt, className, ...props }) => {
+  const [imgSrc, setImgSrc] = useState(src);
+  const [errorCount, setErrorCount] = useState(0);
+
+  const handleError = () => {
+    if (errorCount === 0 && placeholder) {
+      setImgSrc(placeholder);
+      setErrorCount(1);
+    } else {
+      // Usar un placeholder genérico si ambos fallan
+      setImgSrc("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f0f9f0'/%3E%3Cpath d='M100 150 L150 100 L250 200 L300 150' stroke='%238ad341' stroke-width='2' fill='none'/%3E%3Ccircle cx='150' cy='150' r='20' fill='%238ad341' opacity='0.3'/%3E%3Ccircle cx='250' cy='200' r='20' fill='%238ad341' opacity='0.3'/%3E%3C/svg%3E");
+    }
+  };
+
+  return (
+    <img
+      src={imgSrc}
+      alt={alt}
+      className={className}
+      onError={handleError}
+      loading="lazy"
+      {...props}
+    />
+  );
+};
+
 export default function Homepage() {
   const [activeService, setActiveService] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [imagesPerView, setImagesPerView] = useState(3);
+  const slideIntervalRef = useRef(null);
 
   // FUNCIÓN PARA SCROLL
   const scrollToSection = (sectionId) => {
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
   };
 
-  // FUNCIONES DEL CARRUSEL DE 3 IMÁGENES
+  // FUNCIONES DEL CARRUSEL MEJORADO
   const nextSlide = () => {
     setCurrentSlide((prev) => {
-      const next = prev + 3;
+      const next = prev + 1;
       return next >= galleryImages.length ? 0 : next;
     });
   };
 
   const prevSlide = () => {
     setCurrentSlide((prev) => {
-      const prevSlideIndex = prev - 3;
-      return prevSlideIndex < 0 ? Math.max(0, galleryImages.length - 3) : prevSlideIndex;
+      const prevSlideIndex = prev - 1;
+      return prevSlideIndex < 0 ? galleryImages.length - 1 : prevSlideIndex;
     });
   };
 
   const goToSlide = (index) => {
-    setCurrentSlide(index * 3);
+    setCurrentSlide(index);
   };
 
-  // USE EFFECTS
+  // Ajustar número de imágenes por vista según tamaño de pantalla
+  useEffect(() => {
+    const updateImagesPerView = () => {
+      if (window.innerWidth < 640) {
+        setImagesPerView(1);
+      } else if (window.innerWidth < 1024) {
+        setImagesPerView(2);
+      } else {
+        setImagesPerView(3);
+      }
+    };
+
+    updateImagesPerView();
+    window.addEventListener('resize', updateImagesPerView);
+    return () => window.removeEventListener('resize', updateImagesPerView);
+  }, []);
+
+  // CARRUSEL AUTOMÁTICO MEJORADO
+  useEffect(() => {
+    if (slideIntervalRef.current) {
+      clearInterval(slideIntervalRef.current);
+    }
+
+    slideIntervalRef.current = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => {
+      if (slideIntervalRef.current) {
+        clearInterval(slideIntervalRef.current);
+      }
+    };
+  }, [currentSlide]);
+
+  // Pausar carrusel al interactuar
+  const pauseCarousel = () => {
+    if (slideIntervalRef.current) {
+      clearInterval(slideIntervalRef.current);
+    }
+  };
+
+  const resumeCarousel = () => {
+    if (slideIntervalRef.current) {
+      clearInterval(slideIntervalRef.current);
+    }
+    slideIntervalRef.current = setInterval(() => {
+      nextSlide();
+    }, 5000);
+  };
+
   useEffect(() => {
     if (!autoRotate) return;
     const serviceInterval = setInterval(() => {
@@ -375,14 +494,6 @@ export default function Homepage() {
     }, 5000);
     return () => clearInterval(serviceInterval);
   }, [autoRotate]);
-
-  // CARRUSEL AUTOMÁTICO
-  useEffect(() => {
-    const galleryInterval = setInterval(() => {
-      nextSlide();
-    }, 6000);
-    return () => clearInterval(galleryInterval);
-  }, []);
 
   useEffect(() => {
     const testimonialInterval = setInterval(() => {
@@ -405,12 +516,17 @@ export default function Homepage() {
     </div>
   );
 
-  // Obtener las 3 imágenes actuales para mostrar
-  const visibleImages = [];
-  for (let i = 0; i < 3; i++) {
-    const index = (currentSlide + i) % galleryImages.length;
-    visibleImages.push(galleryImages[index]);
-  }
+  // Obtener imágenes visibles para el carrusel
+  const getVisibleImages = () => {
+    const visible = [];
+    for (let i = 0; i < imagesPerView; i++) {
+      const index = (currentSlide + i) % galleryImages.length;
+      visible.push(galleryImages[index]);
+    }
+    return visible;
+  };
+
+  const visibleImages = getVisibleImages();
 
   return (
     <div className="overflow-x-hidden">
@@ -426,6 +542,7 @@ export default function Homepage() {
             poster="/inicio.jpg"
           >
             <source src="/garden-hero.mp4" type="video/mp4" />
+            <img src="/inicio.jpg" alt="Jardín verde" className="w-full h-full object-cover" />
           </video>
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
@@ -448,7 +565,7 @@ export default function Homepage() {
             />
           ))}
         </div>
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10 h-full flex items-center">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10 h-full flex items-center">
           <motion.div
             initial={{ opacity: 0, y: 60 }}
             animate={{ opacity: 1, y: 0 }}
@@ -468,7 +585,7 @@ export default function Homepage() {
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl xl:text-9xl font-black mb-4 md:mb-6 leading-none tracking-tight"
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-4 md:mb-6 leading-none tracking-tight"
             >
               <span className="block">NATURALEZA</span>
               <span className="block" style={{ color: colors.primaryLight }}>REDEFINIDA</span>
@@ -557,7 +674,7 @@ export default function Homepage() {
             backgroundSize: '40px 40px'
           }} />
         </div>
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
           <SectionHeader
             title="Servicios de Excelencia"
             subtitle="Soluciones integrales que transforman espacios y emociones"
@@ -696,102 +813,112 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* 🖼️ NUEVO CARRUSEL DE 3 IMÁGENES */}
-      <section id="proyectos" className="py-20 md:py-28 lg:py-32 bg-gradient-to-br from-green-50 to-blue-50 relative overflow-hidden">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10">
+      {/* 🖼️ CARRUSEL DE IMÁGENES MEJORADO */}
+      <section id="proyectos" className="py-16 md:py-24 lg:py-32 bg-gradient-to-br from-green-50 to-blue-50 relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
           <SectionHeader
             title="Galería de Proyectos"
             subtitle="Donde la visión se encuentra con la ejecución perfecta"
             number="02"
           />
 
-          {/* Carrusel de 3 imágenes */}
-          <div className="relative max-w-6xl mx-auto">
-            <div className="relative">
-              {/* Botones de navegación */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-6 z-10 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors border border-gray-200"
-                aria-label="Anterior"
-              >
-                <Icons.ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-gray-900" />
-              </button>
+          <div className="relative max-w-7xl mx-auto">
+            {/* Botones de navegación */}
+            <button
+              onClick={prevSlide}
+              onMouseEnter={pauseCarousel}
+              onMouseLeave={resumeCarousel}
+              className="absolute left-2 sm:left-4 md:left-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors border border-gray-200"
+              aria-label="Anterior"
+            >
+              <Icons.ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900" />
+            </button>
 
-              <button
-                onClick={nextSlide}
-                className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-6 z-10 w-10 h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors border border-gray-200"
-                aria-label="Siguiente"
-              >
-                <Icons.ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-gray-900" />
-              </button>
+            <button
+              onClick={nextSlide}
+              onMouseEnter={pauseCarousel}
+              onMouseLeave={resumeCarousel}
+              className="absolute right-2 sm:right-4 md:right-6 top-1/2 -translate-y-1/2 z-10 w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors border border-gray-200"
+              aria-label="Siguiente"
+            >
+              <Icons.ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-900" />
+            </button>
 
-              {/* Contenedor de imágenes */}
-              <div className="overflow-hidden">
-                <motion.div
-                  className="flex"
-                  initial={false}
-                  animate={{ x: `-${currentSlide * (100 / 3)}%` }}
-                  transition={{ duration: 0.6, ease: "easeInOut" }}
-                >
-                  {galleryImages.map((image, index) => (
-                    <div
-                      key={index}
-                      className="w-1/3 flex-shrink-0 px-3"
-                    >
-                      <div className="relative group">
-                        <div className="aspect-square md:aspect-[4/5] overflow-hidden rounded-xl md:rounded-2xl shadow-lg">
-                          <img
-                            src={image.src}
-                            alt={image.alt}
-                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                          />
-                        </div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl md:rounded-2xl" />
-                        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-lg md:rounded-xl p-3 md:p-4">
-                            <div className="flex flex-wrap gap-2 mb-2">
-                              <span className="px-2 py-1 bg-green-100 text-green-800 text-xs md:text-sm rounded-full font-medium">
-                                {image.category}
-                              </span>
-                              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs md:text-sm rounded-full">
-                                {image.year}
-                              </span>
-                            </div>
-                            <h3 className="text-sm md:text-base lg:text-lg font-bold text-gray-900 mb-2">
-                              {image.alt}
-                            </h3>
-                            <button className="text-xs md:text-sm font-semibold text-green-600 hover:text-green-700 flex items-center gap-1">
-                              Ver detalles
-                              <Icons.ChevronRight className="w-3 h-3 md:w-4 md:h-4" />
-                            </button>
+            {/* Contenedor del carrusel */}
+            <div
+              className="overflow-hidden mx-2 sm:mx-4 md:mx-6"
+              onMouseEnter={pauseCarousel}
+              onMouseLeave={resumeCarousel}
+            >
+              <motion.div
+                className="flex"
+                initial={false}
+                animate={{ x: `-${currentSlide * (100 / imagesPerView)}%` }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              >
+                {/* Duplicamos las imágenes para crear un efecto de loop continuo */}
+                {[...galleryImages, ...galleryImages].map((image, index) => (
+                  <div
+                    key={`${image.alt}-${index}`}
+                    className="flex-shrink-0 px-2 sm:px-3 md:px-4"
+                    style={{ width: `${100 / imagesPerView}%` }}
+                  >
+                    <div className="relative group h-full">
+                      <div className="aspect-square md:aspect-[4/5] overflow-hidden rounded-xl md:rounded-2xl shadow-lg bg-gray-100">
+                        <ImageWithFallback
+                          src={image.src}
+                          placeholder={image.placeholder}
+                          alt={image.alt}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl md:rounded-2xl" />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 md:p-6 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                        <div className="bg-white/90 backdrop-blur-sm rounded-lg md:rounded-xl p-3 md:p-4">
+                          <div className="flex flex-wrap gap-1 sm:gap-2 mb-2">
+                            <span className="px-2 py-1 bg-green-100 text-green-800 text-xs sm:text-sm rounded-full font-medium">
+                              {image.category}
+                            </span>
+                            <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs sm:text-sm rounded-full">
+                              {image.year}
+                            </span>
                           </div>
+                          <h3 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-gray-900 mb-1 sm:mb-2 line-clamp-2">
+                            {image.alt}
+                          </h3>
+                          <button className="text-xs sm:text-sm font-semibold text-green-600 hover:text-green-700 flex items-center gap-1">
+                            Ver detalles
+                            <Icons.ChevronRight className="w-3 h-3 sm:w-4 sm:h-4" />
+                          </button>
                         </div>
                       </div>
                     </div>
-                  ))}
-                </motion.div>
-              </div>
+                  </div>
+                ))}
+              </motion.div>
             </div>
 
             {/* Indicadores de página */}
-            <div className="flex justify-center gap-2 mt-8 md:mt-12">
-              {Array.from({ length: Math.ceil(galleryImages.length / 3) }).map((_, index) => (
+            <div className="flex justify-center gap-1 sm:gap-2 mt-6 md:mt-8">
+              {galleryImages.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => goToSlide(index)}
-                  className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${Math.floor(currentSlide / 3) === index
+                  onMouseEnter={pauseCarousel}
+                  onMouseLeave={resumeCarousel}
+                  className={`w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 rounded-full transition-all duration-300 ${index === currentSlide
                     ? 'bg-green-600 scale-125'
                     : 'bg-gray-300 hover:bg-gray-400'
                     }`}
-                  aria-label={`Ir a página ${index + 1}`}
+                  aria-label={`Ir a imagen ${index + 1}`}
                 />
               ))}
             </div>
 
             {/* Contador */}
-            <div className="text-center mt-4">
-              <span className="text-sm md:text-base font-medium text-gray-600">
-                {Math.floor(currentSlide / 3) + 1} / {Math.ceil(galleryImages.length / 3)}
+            <div className="text-center mt-3 sm:mt-4">
+              <span className="text-xs sm:text-sm md:text-base font-medium text-gray-600">
+                {currentSlide + 1} / {galleryImages.length}
               </span>
             </div>
           </div>
@@ -799,19 +926,19 @@ export default function Homepage() {
       </section>
 
       {/* ⭐ EXPERIENCIA & TESTIMONIOS */}
-      <section id="experiencia" className="py-20 md:py-28 lg:py-32 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6">
+      <section id="experiencia" className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
           <SectionHeader
             title="Experiencia y Confianza"
             subtitle="La excelencia se mide por la satisfacción de quienes confían en nosotros"
             number="03"
           />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               {advantages.map((advantage, index) => (
                 <motion.div
                   key={index}
-                  className="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-md md:shadow-lg hover:shadow-lg md:hover:shadow-xl transition-all duration-300 border border-gray-100 group relative overflow-hidden"
+                  className="bg-white rounded-xl md:rounded-2xl p-4 md:p-6 shadow-md md:shadow-lg hover:shadow-lg md:hover:shadow-xl transition-all duration-300 border border-gray-100 group relative overflow-hidden"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.08 }}
@@ -842,8 +969,8 @@ export default function Homepage() {
               ))}
             </div>
             <div className="relative">
-              <div className="bg-gradient-to-br from-gray-50 to-white rounded-2xl md:rounded-3xl p-6 md:p-8 shadow-md md:shadow-lg border border-gray-100">
-                <div className="text-center mb-6 md:mb-8">
+              <div className="bg-gradient-to-br from-gray-50 to-white rounded-xl md:rounded-2xl p-5 md:p-8 shadow-md md:shadow-lg border border-gray-100">
+                <div className="text-center mb-5 md:mb-6">
                   <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-2 md:mb-3 text-gray-900">
                     Lo Que Dicen Nuestros Clientes
                   </h3>
@@ -897,13 +1024,13 @@ export default function Homepage() {
       </section>
 
       {/* 🎯 CLIENTES SECTION */}
-      <section id="clientes" className="py-20 md:py-28 lg:py-32 relative overflow-hidden">
+      <section id="clientes" className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: "url('/clientes-bg.jpg')" }}
         />
         <div className="absolute inset-0" style={{ background: colors.gradientDark, opacity: 0.92 }} />
-        <div className="container mx-auto px-3 sm:px-4 md:px-6 relative z-10">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
           <SectionHeader
             title="Para Quiénes Creamos"
             subtitle="Adaptamos nuestras soluciones a las necesidades únicas de cada cliente"
@@ -921,8 +1048,8 @@ export default function Homepage() {
                 viewport={{ once: true }}
                 whileHover={{ y: -2 }}
               >
-                <div className="w-10 h-10 md:w-12 md:h-12 lg:w-16 lg:h-16 bg-white/20 md:bg-white/25 rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden shadow-sm md:shadow-md">
-                  <client.icon className="text-base md:text-lg lg:text-xl text-white" />
+                <div className="w-10 h-10 md:w-12 md:h-12 lg:w-14 lg:h-14 bg-white/20 md:bg-white/25 rounded-lg md:rounded-xl flex items-center justify-center mx-auto mb-3 md:mb-4 group-hover:scale-110 transition-transform duration-300 relative overflow-hidden shadow-sm md:shadow-md">
+                  <client.icon className="text-base md:text-lg text-white" />
                   <div className="absolute inset-0 bg-white/20 transform scale-0 group-hover:scale-100 transition-transform duration-300" />
                 </div>
                 <h3 className="text-base md:text-lg lg:text-xl font-black text-white mb-2 md:mb-3 drop-shadow-sm">
@@ -941,8 +1068,8 @@ export default function Homepage() {
       </section>
 
       {/* 🔄 PROCESO SECTION */}
-      <section id="proceso" className="py-20 md:py-28 lg:py-32 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6">
+      <section id="proceso" className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
           <SectionHeader
             title="Nuestro Proceso"
             subtitle="Un camino claro y transparente hacia el jardín de tus sueños"
@@ -950,7 +1077,7 @@ export default function Homepage() {
           />
           <div className="relative">
             <div className="hidden lg:block absolute top-12 md:top-16 left-1/2 transform -translate-x-1/2 w-4/5 h-0.5 bg-gradient-to-r from-transparent via-green-200 to-transparent" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 max-w-6xl mx-auto">
               {processSteps.map((step, index) => (
                 <motion.div
                   key={index}
@@ -965,13 +1092,13 @@ export default function Homepage() {
                     {index + 1}
                   </div>
                   <div className="relative mb-3 md:mb-4">
-                    <div className="w-14 h-14 md:w-18 md:h-18 lg:w-20 lg:h-20 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-md md:shadow-lg group-hover:scale-105 transition-transform duration-300 relative overflow-hidden"
+                    <div className="w-14 h-14 md:w-16 md:h-16 lg:w-18 lg:h-18 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto shadow-md md:shadow-lg group-hover:scale-105 transition-transform duration-300 relative overflow-hidden"
                       style={{ background: colors.gradientLight }}>
-                      <step.icon className="text-base md:text-lg lg:text-xl" style={{ color: colors.primary }} />
+                      <step.icon className="text-base md:text-lg" style={{ color: colors.primary }} />
                       <div className="absolute inset-0 bg-white/30 transform scale-0 group-hover:scale-100 transition-transform duration-300" />
                     </div>
                   </div>
-                  <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 shadow-md md:shadow-lg group-hover:shadow-lg md:group-hover:shadow-xl transition-all duration-300 border border-gray-100 relative z-10 min-h-[200px] md:min-h-[240px] flex flex-col">
+                  <div className="bg-white rounded-xl md:rounded-2xl p-4 md:p-5 shadow-md md:shadow-lg group-hover:shadow-lg md:group-hover:shadow-xl transition-all duration-300 border border-gray-100 relative z-10 min-h-[180px] md:min-h-[200px] flex flex-col">
                     <h3 className="text-sm md:text-base lg:text-lg font-black mb-2 md:mb-3 tracking-tight text-gray-900">
                       {step.title}
                     </h3>
@@ -993,8 +1120,8 @@ export default function Homepage() {
 
       {/* 📞 CONTACTO SECTION */}
       <section id="contacto" className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-3 sm:px-4 md:px-6">
-          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 xl:gap-16 items-start">
+        <div className="container mx-auto px-4 sm:px-6 md:px-8">
+          <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1002,9 +1129,9 @@ export default function Homepage() {
               viewport={{ once: true }}
               className="relative"
             >
-              <div className="absolute -top-4 -left-4 w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full opacity-5"
+              <div className="absolute -top-4 -left-4 w-16 h-16 md:w-20 md:h-20 rounded-full opacity-5"
                 style={{ backgroundColor: colors.primary }} />
-              <div className="absolute -bottom-4 -right-4 w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 rounded-full opacity-5"
+              <div className="absolute -bottom-4 -right-4 w-12 h-12 md:w-16 md:h-16 rounded-full opacity-5"
                 style={{ backgroundColor: colors.secondary }} />
               <div className="relative z-10">
                 <div className="text-center lg:text-left mb-6 md:mb-8">
@@ -1091,7 +1218,7 @@ export default function Homepage() {
               transition={{ duration: 0.7 }}
               viewport={{ once: true }}
             >
-              <div className="absolute top-0 right-0 w-20 h-20 md:w-24 md:h-24 lg:w-32 lg:h-32 rounded-full opacity-5 transform translate-x-6 -translate-y-6 md:translate-x-10 md:-translate-y-10"
+              <div className="absolute top-0 right-0 w-20 h-20 md:w-24 md:h-24 rounded-full opacity-5 transform translate-x-6 -translate-y-6 md:translate-x-10 md:-translate-y-10"
                 style={{ backgroundColor: colors.primary }} />
               <div className="relative z-10">
                 <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-2 md:mb-3 text-gray-900">Iniciemos tu Proyecto</h3>
