@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabase';
 
 // 🔥 ICONOS (mantenidos igual)
 const Icons = {
@@ -152,7 +153,7 @@ const colors = {
 const services = [
   {
     icon: Icons.Scissors,
-    title: "Podas Expertas",
+    title: "Podas y Talas Profesionales",
     description: "Cuidamos de tus árboles como si fueran nuestros. Con técnicas que respetan su crecimiento natural y garantizan su salud para que disfrutes de ellos muchos años.",
     details: ["Aseguramos el desarrollo sano de tus árboles", "Trabajamos con máxima seguridad para todos", "Programamos los cuidados según cada estación", "Dejamos todo limpio y ordenado", "Te asesoramos sobre el cuidado de tus plantas"],
     color: colors.primary,
@@ -160,33 +161,33 @@ const services = [
   },
   {
     icon: Icons.Tree,
-    title: "Diseño de Jardines",
-    description: "Creamos espacios verdes que son una extensión de tu hogar. Desde jardines sencillos hasta proyectos más elaborados, cada diseño cuenta tu historia.",
-    details: ["Un diseño pensado especialmente para ti", "Elegimos plantas que crecen bien en nuestra zona", "Sistemas de riego que ahorran agua", "Una iluminación que crea ambiente", "Te acompañamos en el mantenimiento"],
+    title: "Diseño y Creación de Jardines",
+    description: "Creamos espacios verdes únicos adaptados a tus necesidades y estilo de vida. Desde jardines sencillos hasta proyectos más elaborados, cada diseño cuenta tu historia.",
+    details: ["Diseño personalizado", "Instalación completa", "Riego automático", "Césped natural y artificial", "Iluminación exterior"],
     color: colors.secondary,
     featured: true
   },
   {
     icon: Icons.Pool,
-    title: "Piscinas Naturales",
-    description: "Integramos piscinas que parecen parte del paisaje, con sistemas de filtrado que cuidan el medio ambiente y requieren menos mantenimiento.",
-    details: ["Piscinas que se integran con la naturaleza", "Filtración natural sin productos químicos agresivos", "Cuidado respetuoso con el entorno", "Un diseño que parece que siempre estuvo ahí", "Controlamos la calidad del agua de forma natural"],
+    title: "Mantenimiento de Piscinas",
+    description: "Servicio integral de mantenimiento de piscinas: limpieza, tratamiento químico, reparaciones y puesta a punto.",
+    details: ["Limpieza semanal/mensual", "Tratamiento químico", "Reparación de filtros", "Puesta a punto primaveral", "Cierre invernal, Cuidado respetuoso con el entorno"],
     color: colors.primaryDark,
     featured: false
   },
   {
     icon: Icons.Leaf,
-    title: "Mantenimiento Integral",
+    title: "Mantenimiento de Áreas Verdes",
     description: "Nos encargamos de que tu jardín siempre esté bonito. Césped cuidado, setos bien definidos y plantas saludables para que tú solo tengas que disfrutar.",
-    details: ["Visitamos tu jardín regularmente", "Controlamos plagas de forma natural", "Usamos fertilizantes orgánicos", "Optimizamos el riego para ahorrar agua", "Te contamos cómo va todo con informes periódicos"],
+    details: ["Siega, desbroce y eliminación de hojas y maleza.", "Corte y forma de setos; césped siempre cuidado.", "Control de plagas respetando el medio ambiente.", "Fertilizantes orgánicos y riego optimizado.", "Te contamos cómo va todo con informes periódicos"],
     color: colors.primary,
     featured: false
   },
   {
     icon: Icons.Hammer,
-    title: "Paisajismo Creativo",
+    title: "Paisajismo y Mini Obras ",
     description: "Construimos terrazas, caminos y estructuras que se integran perfectamente con la naturaleza, usando materiales de calidad que duran años.",
-    details: ["Terrazas donde disfrutar del aire libre", "Caminos que invitan a pasear", "Sistemas que funcionan sin problemas", "Estructuras de madera con buen acabado", "Incluimos agua para crear ambientes especiales"],
+    details: ["Terrazas donde disfrutar del aire libre", "Caminos y muros de contención bien integrados.", "Pérgolas, cenadores y estructuras de madera con buen acabado.", "Sistemas de riego eficientes y duraderos.", "Elementos con agua para ambientes únicos y naturales."],
     color: colors.secondary,
     featured: false
   },
@@ -194,7 +195,7 @@ const services = [
     icon: Icons.Sparkles,
     title: "Servicio Completo",
     description: "Te ayudamos con todo el proceso. Para comunidades y empresas, gestionamos cada detalle para que tú solo tengas que preocuparte de disfrutar los resultados.",
-    details: ["Nos encargamos de todo, desde el principio", "Contratos claros y sin letra pequeña", "Estamos disponibles para cualquier urgencia", "Coordinamos con los vecinos sin problemas", "Te damos toda la documentación organizada"],
+    details: ["Nos encargamos de todo, desde el principio", "Contratos claros de mantenimiento", "Estamos disponibles para cualquier urgencia", "Asesoramiento técnico personalizado", "Te damos toda la documentación organizada"],
     color: colors.primaryDark,
     featured: true
   }
@@ -263,8 +264,8 @@ const advantages = [
   {
     icon: Icons.Users,
     title: "Equipo de Verdaderos Expertos",
-    description: "Botánicos, diseñadores y técnicos que trabajan juntos. Gente que ama las plantas y disfruta creando espacios bonitos.",
-    stat: "15+ personas"
+    description: "Trabajamos con vocación, amor por las plantas y pasión por crear espacios bonitos y sostenibles.",
+    stat: "60+ proyectos"
   },
   {
     icon: Icons.Heart,
@@ -275,8 +276,8 @@ const advantages = [
   {
     icon: Icons.Clock,
     title: "Cumplimos lo que Decimos",
-    description: "Valoramos tu tiempo tanto como el nuestro. Cuando decimos una fecha, la cumplimos. Así de sencillo.",
-    stat: "100% puntuales"
+    description: "Cada proyecto se trata de forma individual, adaptando nuestras soluciones a tus necesidades, estilo y presupuesto específicos.",
+    stat: "100% Atención Personalizada"
   }
 ];
 
@@ -308,52 +309,52 @@ const testimonials = [
 const clientTypes = [
   {
     icon: Icons.Home,
-    title: "Familias",
-    description: "Jardines para que los niños jueguen, para comer al aire libre, para leer un libro en paz. Espacios donde la vida pasa.",
-    projects: "150+ familias"
+    title: "Particulares",
+    description: "Jardines que que reflejan tu estilo de vida. Para comer al aire libre, para leer un libro en paz. Espacios para la vida.",
+    projects: "15+ familias"
   },
   {
     icon: Icons.Building,
-    title: "Comunidades de Vecinos",
-    description: "Cuidamos los espacios que todos compartimos. Jardines donde los vecinos se encuentran y disfrutan juntos.",
-    projects: "80+ comunidades"
+    title: "Comunidades",
+    description: "Cuidamos los jardines y zonas verdes comunes con responsabilidad, aumentando el valor de vuestra propiedad y el bienestar de todos los vecinos.",
+    projects: "comunidades"
   },
   {
     icon: Icons.Briefcase,
-    title: "Empresas",
-    description: "Espacios verdes que hacen que ir a trabajar sea más agradable. Donde los equipos descansan y se inspiran.",
-    projects: "45+ empresas"
+    title: "Clientes Corporativos",
+    description: "Soluciones verdes para empresas, promotoras, administraciones públicas y grandes propietarios. Creamos y mantenemos jardines que reflejan profesionalidad, cuidado y compromiso con el entorno.",
+    projects: "empresas"
   }
 ];
 
 const processSteps = [
   {
     icon: Icons.Phone,
-    title: "Charlamos Contigo",
-    description: "Primero escuchamos. Queremos saber qué sueñas para tu espacio, qué te gusta, cómo vives. Sin compromiso, hablando claro.",
-    duration: "1-2 días"
+    title: "Hablamos contigo",
+    description: "Primero escuchamos tus necesidades, visitamos tu espacio y lo analizamos en persona. Sin compromiso y con total transparencia.",
+    duration: "1-3 días"
   },
   {
     icon: Icons.Mail,
-    title: "Te Contamos Nuestra Idea",
-    description: "Te mostramos un plan completo con dibujos en 3D, un calendario claro y un presupuesto detallado. Sin sorpresas.",
+    title: "Propuesta Detallada",
+    description: "En función de la visita, las dimensiones, el tipo de trabajo, la maquinaria necesaria y los materiales, te enviamos un plan claro: qué haremos, cómo, cuándo y cuánto costará.",
     duration: "3-5 días"
   },
   {
     icon: Icons.Hammer,
-    title: "Hacemos Realidad tu Jardín",
-    description: "Nuestro equipo trabaja manteniéndote informado en cada paso. Verás cómo tu idea toma forma día a día.",
+    title: "Ejecución",
+    description: "Nos ponemos manos a la obra  manteniéndote informado en cada fase. Verás cómo tu espacio se transforma día a día .",
     duration: "Depende del proyecto"
   },
   {
     icon: Icons.Check,
-    title: "Te Entregamos y Seguimos",
-    description: "Te damos las llaves de tu nuevo espacio y seguimos disponibles para lo que necesites. Tu jardín evoluciona y nosotros con él.",
+    title: "Entrega y Soporte",
+    description: "Te entregamos tu jardín terminado y, si lo deseas, te ofrecemos un plan de mantenimiento personalizado. Tu jardín crece y nosotros seguimos <a tu lado.",
     duration: "Seguimos cerca"
   }
 ];
 
-// 🎨 COMPONENTE SECTION HEADER MEJORADO
+// COMPONENTE SECTION HEADER 
 const SectionHeader = ({ title, subtitle, number, isLight = false }) => (
   <motion.div
     className="text-center mb-12 md:mb-24 relative px-3 sm:px-4"
@@ -412,7 +413,85 @@ export default function Homepage() {
   const [autoRotate, setAutoRotate] = useState(true);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [imagesPerView, setImagesPerView] = useState(3);
+
+  // ESTADOS NUEVOS PARA EL FORMULARIO
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    service: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
   const slideIntervalRef = useRef(null);
+
+  // FUNCIONES DEL FORMULARIO
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    try {
+      // Validaciones básicas
+      if (!formData.name || !formData.phone) {
+        throw new Error('Por favor completa los campos requeridos');
+      }
+
+      // Insertar en Supabase
+      const { data, error } = await supabase
+        .from('contacts')
+        .insert([
+          {
+            name: formData.name,
+            phone: formData.phone,
+            email: formData.email || null,
+            service: formData.service || null,
+            message: formData.message || null
+          }
+        ]);
+
+      if (error) throw error;
+
+      // Éxito
+      setSubmitStatus({
+        type: 'success',
+        message: '¡Gracias! Tu mensaje ha sido enviado. Te contactaremos pronto.'
+      });
+
+      // Resetear formulario
+      setFormData({
+        name: '',
+        phone: '',
+        email: '',
+        service: '',
+        message: ''
+      });
+
+      // Ocultar mensaje después de 5 segundos
+      setTimeout(() => {
+        setSubmitStatus({ type: '', message: '' });
+      }, 5000);
+
+    } catch (error) {
+      console.error('Error enviando formulario:', error);
+      setSubmitStatus({
+        type: 'error',
+        message: error.message || 'Hubo un error al enviar el mensaje. Por favor intenta nuevamente.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // FUNCIÓN PARA SCROLL
   const scrollToSection = (sectionId) => {
@@ -589,7 +668,7 @@ export default function Homepage() {
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black mb-4 md:mb-6 leading-none tracking-tight"
             >
               <span className="block">JARDINES</span>
-              <span className="block" style={{ color: colors.primaryLight }}>CON ALMA</span>
+              <span className="block" style={{ color: colors.primaryLight }}>A TU MEDIDA</span>
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 30 }}
@@ -597,7 +676,7 @@ export default function Homepage() {
               transition={{ duration: 0.8, delay: 0.7 }}
               className="text-base md:text-lg lg:text-xl text-white/90 mb-8 md:mb-12 max-w-xl leading-relaxed font-light"
             >
-              Creamos espacios donde la naturaleza y las personas se encuentran. Donde tus momentos especiales tienen el marco perfecto.
+              Creamos y mantenemos espacios donde las personas viven la naturaleza. En tu casa, cada rincón tiene sentido y cuidado.
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -635,10 +714,10 @@ export default function Homepage() {
               className="flex flex-wrap justify-center gap-3 md:gap-4 mt-10 pt-6 md:mt-12 md:pt-8 border-t border-white/20"
             >
               {[
-                { number: "500+", label: "Jardines creados" },
+                { number: "350+", label: "Jardines creados" },
                 { number: "25+", label: "Años de experiencia" },
-                { number: "98%", label: "Familias contentas" },
-                { number: "15+", label: "Personas en el equipo" }
+                { number: "100%", label: "Compromiso" },
+                { number: "150+", label: "Familias contentas" }
               ].map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-base md:text-lg font-black text-white mb-1">{stat.number}</div>
@@ -819,7 +898,7 @@ export default function Homepage() {
         <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
           <SectionHeader
             title="Jardines que hemos creado"
-            subtitle="Espacios donde las familias viven momentos especiales"
+            subtitle="Espacios donde se viven momentos especiales"
             number="02"
           />
 
@@ -1119,10 +1198,12 @@ export default function Homepage() {
         </div>
       </section>
 
-      {/* 📞 CONTACTO SECTION */}
+      {/* 📞 CONTACTO SECTION - CON SUPABASE */}
       <section id="contacto" className="py-16 md:py-24 lg:py-32 bg-white relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 md:px-8">
           <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12 items-start">
+
+            {/* Columna izquierda */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -1140,28 +1221,25 @@ export default function Homepage() {
                     Hablemos de tu jardín
                   </h2>
                   <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-2xl leading-relaxed font-light">
-                    Empieza a crear el espacio donde vivirás momentos especiales
+                    Cada jardín tiene su propia historia. Escribamos la tuya.
                   </p>
                   <div className="w-16 h-1 rounded-full mx-auto lg:mx-0 mt-3 md:mt-4"
                     style={{ background: colors.gradientPrimary }} />
                 </div>
-                <p className="text-sm md:text-base mb-4 md:mb-6 leading-relaxed font-light text-gray-600">
-                  Cada jardín tiene su propia historia. Ayúdanos a escribir la tuya. Estamos aquí para escuchar lo que sueñas y hacerlo realidad.
-                </p>
                 <div className="space-y-3 md:space-y-4 mb-4 md:mb-6">
                   {[
                     {
                       icon: Icons.Phone,
                       title: "Habla con nosotros",
-                      description: "+34 600 000 000",
-                      subtext: "Lunes a Sábado: 8:00 - 20:00",
+                      description: "+34 665 764 488, +34 645 956 928",
+                      subtext: "Lunes a Viernes: 9:00 - 18:00",
                       action: "Llamar ahora"
                     },
                     {
                       icon: Icons.Mail,
                       title: "Escríbenos",
-                      description: "hola@verdevivo.com",
-                      subtext: "Te contestamos en menos de 4 horas",
+                      description: "jdra.flordelvalle@gmail.com",
+                      subtext: "Te contestamos en menos de 6 horas",
                       action: "Enviar mensaje"
                     },
                     {
@@ -1169,7 +1247,6 @@ export default function Homepage() {
                       title: "Estamos en Madrid",
                       description: "Comunidad de Madrid",
                       subtext: "Nos desplazamos sin coste adicional",
-                      action: "Ver zona"
                     }
                   ].map((item, index) => (
                     <motion.div
@@ -1212,6 +1289,8 @@ export default function Homepage() {
                 </motion.div>
               </div>
             </motion.div>
+
+            {/* Columna derecha - FORMULARIO CON SUPABASE */}
             <motion.div
               className="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 shadow-md md:shadow-lg border border-gray-200 relative overflow-hidden"
               initial={{ opacity: 0, x: 20 }}
@@ -1224,7 +1303,29 @@ export default function Homepage() {
               <div className="relative z-10">
                 <h3 className="text-lg md:text-xl lg:text-2xl font-black mb-2 md:mb-3 text-gray-900">Cuéntanos tu idea</h3>
                 <p className="text-sm md:text-base mb-3 md:mb-4 text-gray-600 font-light">Rellena el formulario y te llamamos hoy mismo</p>
-                <form className="space-y-3 md:space-y-4">
+
+                {/* Estado del formulario */}
+                {submitStatus.message && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`mb-4 p-3 rounded-lg ${submitStatus.type === 'success'
+                      ? 'bg-green-50 border border-green-200 text-green-700'
+                      : 'bg-red-50 border border-red-200 text-red-700'
+                      }`}
+                  >
+                    <div className="flex items-center">
+                      {submitStatus.type === 'success' ? (
+                        <Icons.Check className="w-5 h-5 mr-2 flex-shrink-0" />
+                      ) : (
+                        <Icons.Shield className="w-5 h-5 mr-2 flex-shrink-0" />
+                      )}
+                      <p className="text-sm">{submitStatus.message}</p>
+                    </div>
+                  </motion.div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
                   <div className="grid grid-cols-1 gap-3">
                     <div className="space-y-1.5">
                       <label className="block font-bold text-[10px] md:text-xs uppercase tracking-wider text-gray-700">
@@ -1232,9 +1333,13 @@ export default function Homepage() {
                       </label>
                       <input
                         type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
                         placeholder="Cómo te llamas"
                         required
                         className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -1243,9 +1348,13 @@ export default function Homepage() {
                       </label>
                       <input
                         type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         placeholder="Para llamarte personalmente"
                         required
                         className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -1254,18 +1363,28 @@ export default function Homepage() {
                       </label>
                       <input
                         type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
                         placeholder="tu@email.com"
                         className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light"
+                        disabled={isSubmitting}
                       />
                     </div>
                     <div className="space-y-1.5">
                       <label className="block font-bold text-[10px] md:text-xs uppercase tracking-wider text-gray-700">
                         Qué necesitas
                       </label>
-                      <select className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light appearance-none bg-white">
-                        <option>Selecciona el servicio...</option>
+                      <select
+                        name="service"
+                        value={formData.service}
+                        onChange={handleInputChange}
+                        className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light appearance-none bg-white"
+                        disabled={isSubmitting}
+                      >
+                        <option value="">Selecciona el servicio...</option>
                         {services.map((service, i) => (
-                          <option key={i}>{service.title}</option>
+                          <option key={i} value={service.title}>{service.title}</option>
                         ))}
                       </select>
                     </div>
@@ -1274,22 +1393,36 @@ export default function Homepage() {
                         Cuéntanos sobre tu espacio
                       </label>
                       <textarea
+                        name="message"
+                        value={formData.message}
+                        onChange={handleInputChange}
                         placeholder="Describe tu jardín actual, qué te gustaría cambiar, tus ideas..."
                         rows="3"
                         className="w-full px-2.5 py-2 md:px-3.5 md:py-2.5 rounded-lg md:rounded-xl border border-gray-200 focus:ring-1 focus:border-transparent resize-none transition-all duration-300 text-[13px] md:text-sm hover:border-gray-300 focus:border-green-500 font-light"
+                        disabled={isSubmitting}
                       />
                     </div>
                   </div>
                   <motion.button
                     type="submit"
-                    className="w-full py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-sm md:text-base transition-all duration-300 shadow-sm md:shadow-md hover:shadow-md relative overflow-hidden group"
+                    disabled={isSubmitting}
+                    className="w-full py-2.5 md:py-3 rounded-lg md:rounded-xl font-bold text-sm md:text-base transition-all duration-300 shadow-sm md:shadow-md hover:shadow-md relative overflow-hidden group disabled:opacity-70 disabled:cursor-not-allowed"
                     style={{ background: colors.gradientPrimary, color: colors.dark }}
-                    whileHover={{ scale: 1.02, y: -1 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: isSubmitting ? 1 : 1.02, y: isSubmitting ? 0 : -1 }}
+                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
                   >
                     <span className="relative z-10 flex items-center justify-center space-x-1 md:space-x-1.5">
-                      <span>Enviar mi idea</span>
-                      <Icons.ChevronRight className="w-3 h-3 md:w-3.5 md:h-3.5 group-hover:translate-x-0.5 md:group-hover:translate-x-1 transition-transform duration-300" />
+                      {isSubmitting ? (
+                        <>
+                          <span>Enviando...</span>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        </>
+                      ) : (
+                        <>
+                          <span>Enviar mi idea</span>
+                          <Icons.ChevronRight className="w-3 h-3 md:w-3.5 md:h-3.5 group-hover:translate-x-0.5 md:group-hover:translate-x-1 transition-transform duration-300" />
+                        </>
+                      )}
                     </span>
                     <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                   </motion.button>

@@ -107,8 +107,7 @@ export default function Footer() {
             </div>
 
             <p className="text-gray-300 mb-6 leading-relaxed max-w-lg text-sm md:text-base">
-              Transformamos espacios ordinarios en experiencias extraordinarias. Más de 25 años de experiencia
-              en paisajismo, diseño de jardines y mantenimiento integral con los más altos estándares de calidad.
+              Más de 25 años creando y cuidando jardines a tu medida. Diseño, mantenimiento y paisajismo para que disfrutes la naturaleza sin preocupaciones.
             </p>
 
             <div className="flex flex-wrap gap-3 mb-6">
@@ -119,7 +118,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <div className="text-xs text-gray-400">Teléfono</div>
-                  <div className="font-bold">+34 600 000 000</div>
+                  <div className="font-bold">+34 665764488 +34 645956928</div>
                 </div>
               </div>
 
@@ -130,7 +129,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <div className="text-xs text-gray-400">Email</div>
-                  <div className="font-bold">hola@verdevivo.com</div>
+                  <div className="font-bold">jdra.flordelvalle@gmail.com</div>
                 </div>
               </div>
             </div>
@@ -205,17 +204,17 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-gray-400 text-sm">
-              © 2024 VerdeVivo Paisajismo. Todos los derechos reservados.
+              © 2024 FlorDelValle. Todos los derechos reservados.
             </p>
           </div>
 
           {/* Estadísticas */}
           <div className="flex flex-wrap justify-center gap-4 md:gap-6">
             {[
-              { number: "500+", label: "Proyectos" },
+              { number: "60+", label: "Proyectos" },
               { number: "25+", label: "Años" },
               { number: "98%", label: "Satisfacción" },
-              { number: "15+", label: "Expertos" }
+              { number: "100%+", label: "Compromiso" }
             ].map((stat, index) => (
               <div key={index} className="text-center">
                 <div className="text-lg font-black mb-1" style={{ color: colors.primaryLight }}>
