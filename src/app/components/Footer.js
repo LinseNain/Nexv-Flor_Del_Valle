@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 // Usamos los iconos del homepage
 const PhoneIcon = () => (
@@ -229,12 +230,22 @@ export default function Footer() {
         </div>
 
         {/* Aviso legal */}
-        <div className="mt-8 pt-6 border-t border-gray-800 text-center">
-          <p className="text-xs text-gray-500">
-            Diseño y desarrollo con pasión por la naturaleza •
-            <a href="#" className="mx-2 hover:text-gray-300 transition-colors">Política de privacidad</a> •
-            <a href="#" className="mx-2 hover:text-gray-300 transition-colors">Aviso legal</a> •
-            <a href="#" className="mx-2 hover:text-gray-300 transition-colors">Cookies</a>
+        <div className="mt-8 pt-6 border-t border-gray-800">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs text-gray-400 mb-4">
+            <Link href="/politica-privacidad" className="hover:text-white transition-colors hover:underline">
+              Política de Privacidad
+            </Link>
+            <span className="text-gray-700">|</span>
+            <Link href="/aviso-legal" className="hover:text-white transition-colors hover:underline">
+              Aviso Legal
+            </Link>
+            <span className="text-gray-700">|</span>
+            <Link href="/politica-cookies" className="hover:text-white transition-colors hover:underline">
+              Política de Cookies
+            </Link>
+          </div>
+          <p className="text-xs text-gray-500 text-center">
+            Diseño y desarrollo con pasión por la naturaleza | Cumplimiento RGPD
           </p>
         </div>
       </div>

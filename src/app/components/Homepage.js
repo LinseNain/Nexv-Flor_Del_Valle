@@ -613,17 +613,11 @@ export default function Homepage() {
       {/* 🌟 HERO SECTION */}
       <section id="inicio" className="relative h-screen min-h-[700px] overflow-hidden">
         <div className="absolute inset-0">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
+          <img 
+            src="/inicio.jpg" 
+            alt="Jardín verde" 
             className="w-full h-full object-cover"
-            poster="/inicio.jpg"
-          >
-            <source src="/garden-hero.mp4" type="video/mp4" />
-            <img src="/inicio.jpg" alt="Jardín verde" className="w-full h-full object-cover" />
-          </video>
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
         </div>
         <div className="absolute inset-0 overflow-hidden">
@@ -1067,7 +1061,7 @@ export default function Homepage() {
                   >
                     <StarRating rating={testimonials[activeTestimonial].rating} />
                     <p className="text-xs md:text-sm lg:text-base leading-relaxed font-normal text-gray-800 my-4 md:my-5 italic border-l-2 md:border-l-3 pl-2 md:pl-4" style={{ borderColor: colors.primary }}>
-                      "{testimonials[activeTestimonial].content}"
+                      &ldquo;{testimonials[activeTestimonial].content}&rdquo;
                     </p>
                     <div className="mb-2 md:mb-3">
                       <div className="text-sm md:text-base font-black text-gray-900 mb-0.5 md:mb-1">
@@ -1107,7 +1101,7 @@ export default function Homepage() {
       <section id="clientes" className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: "url('/clientes-bg.jpg')" }}
+          style={{ backgroundImage: "url('/inicio.jpg')" }}
         />
         <div className="absolute inset-0" style={{ background: colors.gradientDark, opacity: 0.92 }} />
         <div className="container mx-auto px-4 sm:px-6 md:px-8 relative z-10">
